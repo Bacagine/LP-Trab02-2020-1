@@ -42,6 +42,7 @@ void cadastrar_movimentacao(void){
     FILE *arq_conta, *arq_mov;
     conta bankaccount;
     movimentacao movimentation;
+    float resultado;
     //data date;
     
     if((arq_mov = fopen(ARQ_MOVIMENTACAO, "ab")) == NULL){
@@ -86,7 +87,7 @@ void cadastrar_movimentacao(void){
             printf("--------------------\n");
             printf("Digite a data: ");
             scanf("%d/%d/%d", &movimentation.dt_movimentacao.dia, &movimentation.dt_movimentacao.mes, &movimentation.dt_movimentacao.ano);
-            printf("Digite o tipo de movimentacao: ");
+            printf("Digite o tipo de movimentacao\n(1 - saque, 2 - deposito): ");
             scanf("%d", &movimentation.tipo);
             
             while(movimentation.tipo != 1 && movimentation.tipo != 2){
@@ -103,6 +104,8 @@ void cadastrar_movimentacao(void){
                     printf("\nValor da movimentacao: R$ ");
                     scanf("%f", &movimentation.valor); 
                 }
+                bankaccount.saldo -= movimentation.valor;
+                //bankaccount.saldo = resultado;
                 fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
                 fclose(arq_mov);
                 clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
@@ -121,6 +124,8 @@ void cadastrar_movimentacao(void){
                     printf("\nValor da movimentacao: R$ ");
                     scanf("%f", &movimentation.valor); 
                 }
+                bankaccount.saldo += movimentation.valor;
+                //bankaccount.saldo = resultado;
                 fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
                 fclose(arq_mov);
                 clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
@@ -175,21 +180,21 @@ void listar_movimentacoes(void){
     }
     
     clear_terminal();
-    fprintf(stdout, "*************************************************************************************\n");
-    fprintf(stdout, "#Número da movimentacao     Código da Conta             Valor              Data      \n");
-    fprintf(stdout, "*************************************************************************************\n");
+    fprintf(stdout, "**********************************************************\n");
+    fprintf(stdout, "#Código da Conta             Valor              Data      \n");
+    fprintf(stdout, "**********************************************************\n");
     // Lê o arquivo e busca pelo nome digitado
     count = 0;
     while(fread(&movimentation, sizeof(movimentacao), 1, arq) > 0){
         if((movimentation.num_conta == cod_movimentation) != 0){
-            fprintf(stdout, "%06d                      %06d                      %.2f\
-             %02d/%02d/%02d\n", movimentation.num_conta, movimentation.num_conta, movimentation.valor,
+            fprintf(stdout, "%06d                       R$%.2f           %02d/%02d/%02d\n",
+                                movimentation.num_conta, movimentation.valor,
                                 movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano);
             
             count++;
         }
     }
-    fprintf(stdout, "*************************************************************************************\n");
+    fprintf(stdout, "**********************************************************\n");
     
     if(count == 0){
         clear_terminal();
@@ -207,6 +212,7 @@ void listar_movimentacoes(void){
 
 /*
 int compara_datas(data, data){
+    setlocale(LC_ALL, "Portuguese");
     
 }
 */

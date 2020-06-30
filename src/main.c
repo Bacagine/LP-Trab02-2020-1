@@ -36,6 +36,7 @@
 #include "../include/movimentacao.h"
 
 int main(int argc, char **argv){
+    setlocale(LC_ALL, "Portuguese");
     if(argc == 1){
         menu();
     }
@@ -63,7 +64,7 @@ int main(int argc, char **argv){
         }
     }
     else{
-        fprintf(stderr, "Erro! Voce digitou mais de um argumento!\n");
+        fprintf(stderr, "Erro! Você digitou mais de um argumento!\n");
         return 1;
     }
     return 0;

@@ -49,20 +49,20 @@ Argumentos:\n\
  * mostrada caso
  * não haja nenhuma
  * conta cadastrada */
-#define NOT_BANKACCOUNT    "Erro! Nao existe nenhuma conta cadastrada!"
+#define NOT_BANKACCOUNT    "Erro! Não existe nenhuma conta cadastrada!"
 
 /* Mensagem a ser 
  * mostrada após o 
  * cadastro da movimen-
  * tação */
-#define MOV_SUCESS         "Movimentacao realizada com sucesso!"
+#define MOV_SUCESS         "Movimentação realizada com sucesso!"
 
 /* Mensagem a ser 
  * mostrada caso
  * não haja nenhuma
  * movimentação cadas-
  * trada */
-#define NOT_MOV            "Erro! Nao ha nenhuma movimentacao cadastrada!"
+#define NOT_MOV            "Erro! Não há nenhuma movimentação cadastrada!"
 
 /* 
  *  */

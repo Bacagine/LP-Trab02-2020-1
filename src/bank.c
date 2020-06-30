@@ -38,6 +38,7 @@
 #include "../include/statusbar.h"
 
 void menu(void){
+    setlocale(LC_ALL, "Portuguese");
     int op;
     loading();
     do{
@@ -72,7 +73,7 @@ void menu(void){
             case 6:
                 break;
             default:
-                fprintf(stderr, "Erro!\nOpcao invalida! Por favor tente novamente: ");
+                fprintf(stderr, "Erro!\nOpção inválida! Por favor tente novamente: ");
         }
         
     } while(op != 6);
