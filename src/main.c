@@ -5,7 +5,8 @@
  *                                                                                *
  * main.c: Arquivo principal do programa bank                                     *
  *                                                                                *
- * ATENTION: a descrição da aplicação deve vir aqui ...                           *
+ * bank é um caixa eletronico escrito em C que faz cadastro e listagem de contas, *
+ * cadastro e listagem de movimentações de saque e de deposito.                   *
  *                                                                                *
  * Desenvolvedores: Gustavo Bacagine          <gustavo.bacagine@protonmail.com>   *
  *                  Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *
@@ -48,10 +49,10 @@ int main(int argc, char **argv){
         }
         else if(!strcmp(argv[1], "-dev") || !strcmp(argv[1], "--developers")){
             developers(); // Mostra os desenvolvedores do programa
-        }
+        }/*
         else if(!strcmp(argv[1], "--license")){
             license();
-        }
+        } */
         else if(!strcmp(argv[1], "--top-secret")){ // This is top secret
             printf("\n"
                    "\n"

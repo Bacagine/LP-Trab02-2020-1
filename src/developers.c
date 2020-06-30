@@ -5,7 +5,8 @@
  *                                                                                *
  * developers.c: Mostra os desenvolvedores da aplicação                           *
  *                                                                                *
- * ATENTION: a descrição da aplicação deve vir aqui ... *
+ * bank é um caixa eletronico escrito em C que faz cadastro e listagem de contas, *
+ * cadastro e listagem de movimentações de saque e de deposito.                   *
  *                                                                                *
  * Desenvolvedores: Gustavo Bacagine <gustavo.bacagine@protonmail.com>            *
  *                  Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *
@@ -33,8 +34,6 @@
 
 void developers(void){
     setlocale(LC_ALL, "Portuguese");
-
-    clear_terminal();
     
     fprintf(stdout, "*************************DESENVOLVEDORES*************************\n");    
     fprintf(stdout, "*                                                               *\n");
@@ -45,14 +44,10 @@ void developers(void){
     fprintf(stdout, "* Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *\n");
     fprintf(stdout, "* Caio Elias Emerick Regino <caioregino.147@gmail.com>          *\n");
     fprintf(stdout, "*                                                               *\n");
-    fprintf(stdout, "* Aqui deverá vir uma breve explicação sobre a aplicação        *\n");
+    fprintf(stdout, "* bank é um caixa eletronico escrito em C que faz cadastro e    *\n");
+    fprintf(stdout, "* listagem de contas, cadastro e listagem de movimentações de   *\n");
+    fprintf(stdout, "* saque e de deposito                                           *\n");
     fprintf(stdout, "*                                                               *\n");
     fprintf(stdout, "*****************************************************************\n");
-    
-    stay();
-    clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
-                     * digite algo e de enter, o valor digitado não 
-                     * será pego pelo menu */
-    clear_terminal();
 }
 

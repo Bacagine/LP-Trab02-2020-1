@@ -5,7 +5,8 @@
  *                                                                                *
  * bank.c: Arquivo com o menu da aplicação                                        *
  *                                                                                *
- * ATENTION: a descrição da aplicação deve vir aqui ...                           *
+ * bank é um caixa eletronico escrito em C que faz cadastro e listagem de contas, *
+ * cadastro e listagem de movimentações de saque e de deposito.                   *
  *                                                                                *
  * Desenvolvedores: Gustavo Bacagine          <gustavo.bacagine@protonmail.com>   *
  *                  Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *

@@ -6,10 +6,11 @@
  * clear_buffer.c: arquivo com o desenvolvimento do prototipo da função           *
  * clear_buffer da biblioteca buffer.h                                            *
  *                                                                                *
- * OBS: Essa função não foi desenvolvida por mim. Percebi que muitos              *
- * programadores se utilizam dessa função e passei a usa-lá em meus programas     *
+ * bank é um caixa eletronico escrito em C que faz cadastro e listagem de contas, *
+ * cadastro e listagem de movimentações de saque e de deposito.                   *
  *                                                                                *
- * Versão: (aqui deve vir a versão da sua aplicação. Ex.: 1.0)                    *
+ * OBS: Essas funções não foram desenvolvidas por nós. Percebemos que muitos      *
+ * programadores se utilizam dessas função e passei a usa-lá em meus programas    *
  *                                                                                *
  * Desenvolvedores: Gustavo Bacagine          <gustavobacagine@gmail.com>         *
  *                  Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *

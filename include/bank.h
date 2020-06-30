@@ -6,6 +6,9 @@
  * 
  * Biblioteca criada por Gustavo Bacagine <gustavo.bacagine@protonmail.com>
  * 
+ * bank é um caixa eletronico escrito em C que faz cadastro e listagem de contas,
+ * cadastro e listagem de movimentações de saque e de deposito.
+ * 
  * Este programa é software livre; você pode redistribuí-lo e/ou modificá-lo
  * sob os termos da GNU General Public License conforme publicada pela Free
  * Software Foundation; quer a versão 2 da licença, ou (conforme você escolha)
@@ -27,7 +30,7 @@
 #ifndef _BANK_H
 #define _BANK_H
 
-#define VERSION            "bank 20.06.30 (amd64)" // Versão da aplicação
+#define VERSION            "bank 20.06.30v2 (amd64)" // Versão da aplicação
 #define HELP               "Usage: bank [option]\n\
 \nbank é um caixa eletronico escrito em C que faz cadastro e listagem\n\
 de contas, cadastro e listagem de movimentações de saque e de deposito\n\
