@@ -48,8 +48,7 @@ void menu(void){
         printf("* 2) Listar Contas           *\n");
         printf("* 3) Cadastrar Movimentacao  *\n");
         printf("* 4) Listar Movimentacoes    *\n");
-        printf("* 5) Comparar Datas          *\n");
-        printf("* 6) Sair                    *\n");
+        printf("* 5) Sair                    *\n");
         printf("******************************\n");
         printf("Option: ");
         scanf("%d", &op);
@@ -68,15 +67,14 @@ void menu(void){
                 listar_movimentacoes();
                 break;
             case 5:
-                //compara_datas();
-                break;
-            case 6:
                 break;
             default:
                 fprintf(stderr, "Erro!\nOpção inválida! Por favor tente novamente: ");
+                stay();
+                break;
         }
         
-    } while(op != 6);
+    } while(op != 5);
 }
 
 void loading(void){

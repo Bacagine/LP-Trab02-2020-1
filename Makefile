@@ -12,8 +12,8 @@ SRCDIR  = ./src
 INCDIR  = ./include
 OBJDIR  = ./obj
 BINDIR  = ./bin
-#ICONDIR = ./icons
-#ICON    = $(ICONDIR).jpg
+ICONDIR = ./icons
+ICON    = $(ICONDIR)/$(TARGET).png
 SRC     = $(wildcard $(SRCDIR)/*.c)
 INC     = -I $(INCDIR)
 OBJ     = $(addprefix $(OBJDIR)/,main.o bank.o conta.o movimentacao.o progressbar.o statusbar.o clear_buffer.o developers.o)
@@ -64,13 +64,13 @@ install:
 	cp -v $(BIN) /usr/bin
 	mkdir /usr/share/$(TARGET)
 	cp -rv $(BIN) /usr/share/$(TARGET)
-#	cp -rv $(ICON) /usr/share/pixmaps
+	cp -rv $(ICON) /usr/share/pixmaps
 	cp -v $(TARGET).desktop /usr/share/applications
 	desktop-file-install /usr/share/applications/$(TARGET).desktop
 uninstall:
 	$(RM) /bin/$(TARGET)
 	$(RM) /usr/share/$(TARGET)
-#	$(RM) /usr/share/pixmaps/$(ICON)
+	$(RM) /usr/share/pixmaps/$(TARGET).png
 	$(RM) /usr/share/applications/$(TARGET).desktop
 
 .PHONY: all run clean mrproper install uninstall

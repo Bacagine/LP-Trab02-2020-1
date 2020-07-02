@@ -42,9 +42,14 @@ void cadastrar_movimentacao(void){
     FILE *arq_conta, *arq_mov;
     conta bankaccount;
     movimentacao movimentation;
-    float resultado;
-    //data date;
+    int cod_bankaccount; /* Codigo da conta que 
+                          * o usuário deseja realizar 
+                          * uma movimentação */
+    int tipo;
+    float valor;      /* Valor da movimentação 
+                       * escolhido pelo usuário */
     
+    // Abre o arquivo movimentacao.dat
     if((arq_mov = fopen(ARQ_MOVIMENTACAO, "ab")) == NULL){
         clear_terminal();
         fprintf(stderr, "Erro: nao foi possivel abrir o arquivo movimentacao.dat!");
@@ -57,144 +62,191 @@ void cadastrar_movimentacao(void){
     }
     fseek(arq_mov, 0, SEEK_END); // Desloca o indicador de posição para o final do arquivo
     
-    movimentation.num_conta = ftell(arq_mov) / sizeof(movimentacao) + 1; /* Pega o número atual da 
-                                                                          * movimentação cadastrada em bytes
-                                                                          * divide pelo tamanho da estrutura 
-                                                                          * movimentação em bytes e soma + 1
-                                                                          * 
-                                                                          * Somamos 1 pois, o valor inicial da
-                                                                          * movimentação não pode ser 0 e, o proximo 
-                                                                          * valor da movimentação será a atual somado mais 1 */
-    clear_terminal();
-    printf("********Nova Movimentacao********\n");
-    printf("Numero da movimentacao: %d\n", movimentation.num_conta);
-    printf("Digite o numero da conta: ");
-    scanf("%d", &bankaccount.num_conta);
-    
-    if((arq_conta = fopen(ARQ_CONTA, "rb")) == NULL){
+    /* Abre o arquivo contas.dat */
+    if((arq_conta = fopen(ARQ_CONTA, "r+b")) == NULL){
         clear_terminal();      // Limpa o terminal ao entrar aqui
-        fprintf(stderr, "Erro: não nenhum cliente cadastrado!");
+        fprintf(stderr, "Erro: não nenhuma conta cadastrado!");
         stay();          // Pausa a mensagem de erro no terminal
         clear_buffer();
         clear_terminal(); // Limpa o terminal antes de voltar para o menu
         return;
     }
     
-    while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){
-        if(bankaccount.num_conta == movimentation.num_conta){
-            printf("\n%s\n\n", bankaccount.nome);
-            printf("Data da movimentacao\n");
-            printf("--------------------\n");
-            printf("Digite a data: ");
-            scanf("%d/%d/%d", &movimentation.dt_movimentacao.dia, &movimentation.dt_movimentacao.mes, &movimentation.dt_movimentacao.ano);
-            printf("Digite o tipo de movimentacao\n(1 - saque, 2 - deposito): ");
-            scanf("%d", &movimentation.tipo);
-            
-            while(movimentation.tipo != 1 && movimentation.tipo != 2){
-                fprintf(stderr, "Erro! Digite apenas 1 ou 2\n");
-                scanf("%d", &movimentation.tipo);
-            }
-            
-            if(movimentation.tipo == 1){
-                printf("Valor da movimentacao: R$ ");
-                scanf("%f", &movimentation.valor);
-                while(movimentation.valor <= 0){
-                    fprintf(stderr, "Valor inválido!\n");
-                    fprintf(stderr, "Por favor, digite um número maior que 0:\n");
-                    printf("\nValor da movimentacao: R$ ");
-                    scanf("%f", &movimentation.valor); 
-                }
-                bankaccount.saldo -= movimentation.valor;
-                //bankaccount.saldo = resultado;
-                fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
-                fclose(arq_mov);
-                clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
-                puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
-                stay();         /* Pausa a mensagem que está definida em
-                                 * MOV_SUCESS no terminal */
-                clear_buffer();
-                clear_terminal(); // Limpa o terminal antes de voltar para o menu
-            }
-            else if(movimentation.tipo == 2){
-                printf("Valor da movimentacao: R$ ");
-                scanf("%f", &movimentation.valor);
-                while(movimentation.valor <= 0){
-                    fprintf(stderr, "Valor inválido!\n");
-                    fprintf(stderr, "Por favor, digite um número maior que 0:\n");
-                    printf("\nValor da movimentacao: R$ ");
-                    scanf("%f", &movimentation.valor); 
-                }
-                bankaccount.saldo += movimentation.valor;
-                //bankaccount.saldo = resultado;
-                fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
-                fclose(arq_mov);
-                clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
-                puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
-                stay();         /* Pausa a mensagem que está definida em
-                                 * MOV_SUCESS no terminal */
-                clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
-                                 * digite algo e de enter, o valor digitado não 
-                                 * será pego pelo menu */
-                clear_terminal(); // Limpa o terminal antes de voltar para o menu
-            }
-        }
-    }
-    if(bankaccount.num_conta != movimentation.num_conta){
-        clear_terminal();
-        printf("Não existe nenhuma conta com esse código\n");
-        printf("Movimentacao interrompida!\n");
-//             fclose(arq_cliente);
+    clear_terminal();
+    printf("********Nova Movimentacao********\n");
+    //printf("Numero da movimentacao: %d\n", movimentation.num_conta);
+    printf("Digite o numero da conta: ");
+    scanf("%d", &cod_bankaccount);
+    fseek(arq_conta, (cod_bankaccount - 1) * sizeof(conta), SEEK_SET);
+    fread(&bankaccount, sizeof(conta), 1, arq_conta);
+    
+    /* Verifica se o usuario digitou um numero 
+     * de conta que não existe */
+    if(feof(arq_conta) || cod_bankaccount <= 0){
+        fprintf(stderr, "Erro! Não existe nenhuma conta com esse número\n");
+        fprintf(stderr, "Movimentacao interrompida!\n");
         stay();
-        clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
-                            * digite algo e de enter, o valor digitado não 
-                            * será pego pelo menu */
-        clear_terminal();
+        clear_buffer();
+        return;
     }
-    
+    else{
+        //while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){ //Não use isso!!!!
+            /* Verifica qual a conta em que o usuário deseja
+             * realizar a movimentação */
+            if(cod_bankaccount == bankaccount.num_conta){
+                movimentation.num_conta = cod_bankaccount;
+                printf("\n%s\n\n", bankaccount.nome);
+                printf("Data da movimentacao\n");
+                printf("--------------------\n");
+                printf("Digite a data: ");
+                scanf("%d/%d/%d", &movimentation.dt_movimentacao.dia, 
+                                  &movimentation.dt_movimentacao.mes, 
+                                  &movimentation.dt_movimentacao.ano);
+                printf("Digite o tipo de movimentacao\n(1 - saque, 2 - deposito): ");
+                scanf("%d", &tipo);
+                
+                while(tipo != 1 && tipo != 2){
+                    fprintf(stderr, "Erro! Digite apenas 1 ou 2\n");
+                    scanf("%d", &tipo);
+                }
+                
+                movimentation.tipo = tipo;
+                
+                if(movimentation.tipo == 1){
+                    printf("Valor da movimentacao: R$ ");
+                    scanf("%f", &valor);
+                    while(valor <= 0){
+                        fprintf(stderr, "Valor inválido!\n");
+                        fprintf(stderr, "Por favor, digite um número maior que 0:\n");
+                        printf("\nValor da movimentacao: R$ ");
+                        scanf("%f", &valor); 
+                    }
+                    movimentation.valor = valor;
+                    bankaccount.saldo -= valor;
+                    fseek(arq_conta, -sizeof(conta), SEEK_CUR);
+                    fwrite(&bankaccount, sizeof(conta), 1, arq_conta);
+                    fwrite(&movimentation, sizeof(bankaccount), 1, arq_mov);
+                    clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
+                    puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
+                    stay();             /* Pausa a mensagem que está definida em
+                                         * MOV_SUCESS no terminal */
+                    clear_buffer();   /* Limpamos o buffer aqui pois, caso o usuario 
+                                       * digite algo e de enter, o valor digitado não 
+                                       * será pego pelo menu */
+                }
+                else if(movimentation.tipo == 2){
+                    printf("Valor da movimentacao: R$ ");
+                    scanf("%f", &valor);
+                    while(valor <= 0){
+                        fprintf(stderr, "Valor inválido!\n");
+                        fprintf(stderr, "Por favor, digite um número maior que 0:\n");
+                        printf("\nValor da movimentacao: R$ ");
+                        scanf("%f", &valor); 
+                    }
+                    movimentation.valor = valor;
+                    bankaccount.saldo += valor;
+                    fseek(arq_conta, -sizeof(conta), SEEK_CUR);
+                    fwrite(&bankaccount, sizeof(conta), 1, arq_conta);
+                    fwrite(&movimentation, sizeof(bankaccount), 1, arq_mov);
+                    clear_terminal();        // Limpa o terminal após o termino do cadastrado da compra
+                    puts(MOV_SUCESS);       // Mostra a mensagem que foi definida em MOV_SUCESS
+                    stay();                /* Pausa a mensagem que está definida em
+                                            * MOV_SUCESS no terminal */
+                    clear_buffer();      /* Limpamos o buffer aqui pois, caso o usuario 
+                                          * digite algo e de enter, o valor digitado não 
+                                          * será pego pelo menu */
+                }
+            }
+        //}
+    }
     fclose(arq_conta);
-    
+    fclose(arq_mov);
 }
 
 void listar_movimentacoes(void){
     setlocale(LC_ALL, "Portuguese");
     
-    FILE *arq;         // Declarando uma variavel de arquivo
-    movimentacao movimentation;       // Declarando uma estrutura do tipo compra
+    FILE *arq;                    // Declarando uma variavel de arquivo
+    FILE *arq_conta;
+    conta bankaccount;           // 
+    movimentacao movimentation; // Declarando uma estrutura do tipo movimentacao
+    data dt_inicial, dt_final;
     
     int cod_movimentation;
     int count;
+    int r;
+    
+    if((arq_conta = fopen(ARQ_CONTA, "rb")) == NULL){
+        clear_terminal();      // Limpa o terminal ao entrar aqui
+        fprintf(stderr, "Erro: não nenhuma conta cadastrado!");
+        stay();          // Pausa a mensagem de erro no terminal
+        clear_buffer();
+        return;
+    }
     
     clear_terminal();
     fprintf(stdout, "********Consultar Movimentacoes********\n");
     fprintf(stdout, "Digite o código da conta: ");
     scanf("%d", &cod_movimentation);
+    while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){
+        if(cod_movimentation != bankaccount.num_conta){
+            fprintf(stderr, "Erro! Não existe nenhuma conta cadastrada com esse numero!\n");
+            fprintf(stderr, "Consulta encerrada!\n");
+            stay();          // Pausa a mensagem de erro no terminal
+            clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
+                             * digite algo e de enter, o valor digitado não 
+                             * será pego pelo menu */
+            return;
+        }
+    }
+    fprintf(stdout, "Digite a data inicial: ");
+    scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
+    fprintf(stdout, "Digite a data final: ");
+    scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
     
-    if((arq = fopen(ARQ_MOVIMENTACAO, "rb")) == NULL) {
-        clear_terminal();      // Limpa o terminal ao entrar aqui
-        puts(NOT_MOV);       // Mostra a mensagem que foi definida em NOT_MOV
+    r = compara_datas(dt_inicial, dt_final);
+    
+    while(r == 1){
+        fprintf(stderr, "Erro! A data inicial e maior que a data final!\n");
+        fprintf(stdout, "Por favor digite novamente:\n");
+        fprintf(stdout, "Digite a data inicial: ");
+        scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
+        fprintf(stdout, "Digite a data final: ");
+        scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
+    }
+    
+    if((arq = fopen(ARQ_MOVIMENTACAO, "rb")) == NULL){
+        clear_terminal();  // Limpa o terminal ao entrar aqui
+        puts(NOT_MOV);    // Mostra a mensagem que foi definida em NOT_MOV
         stay();          /* Pausa a mensagem que está definida em
                           * NOT_MOV no terminal */
-        clear_buffer();
-        clear_terminal(); // Limpa o terminal antes de voltar para o menu
+        clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
+                         * digite algo e de enter, o valor digitado não 
+                         * será pego pelo menu */
         return;
     }
     
+    /*
+     if(r == 0 || r == -1){
+        
+     }
+     */
+    
     clear_terminal();
-    fprintf(stdout, "**********************************************************\n");
-    fprintf(stdout, "#Código da Conta             Valor              Data      \n");
-    fprintf(stdout, "**********************************************************\n");
-    // Lê o arquivo e busca pelo nome digitado
+    fprintf(stdout, "***********************************************\n");
+    fprintf(stdout, "#Data             Tipo              Valor      \n");
+    fprintf(stdout, "***********************************************\n");
     count = 0;
+    // Lê o arquivo e busca pelo codigo digitado
     while(fread(&movimentation, sizeof(movimentacao), 1, arq) > 0){
         if((movimentation.num_conta == cod_movimentation) != 0){
-            fprintf(stdout, "%06d                       R$%.2f           %02d/%02d/%02d\n",
-                                movimentation.num_conta, movimentation.valor,
-                                movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano);
+            fprintf(stdout, "%02d/%02d/%02d        %d                 R$%.2f\n",
+                                movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, movimentation.tipo, movimentation.valor);
             
             count++;
         }
     }
-    fprintf(stdout, "**********************************************************\n");
+    fprintf(stdout, "***********************************************\n");
     
     if(count == 0){
         clear_terminal();
@@ -206,13 +258,108 @@ void listar_movimentacoes(void){
     stay();            /* Pausa o arquivo de cadastros 
                         * no terminal para que o usuario
                         * possa ver as compras cadastradas */
-    clear_buffer();
-    clear_terminal();  // Limpa o terminal antes de voltar para o menu
+    clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
+                     * digite algo e de enter, o valor digitado não 
+                     * será pego pelo menu */
 }
 
-/*
-int compara_datas(data, data){
-    setlocale(LC_ALL, "Portuguese");
+int compara_datas(data dt_inicial, data dt_final){
+    int dt_i_d, dt_i_m, dt_i_a, dt_i;
+    int dt_f_d, dt_f_m, dt_f_a, dt_f;
     
+    dt_i_d = dt_inicial.dia * 24;
+    dt_i_m = dt_inicial.mes * 30 * 24;
+    dt_i_a = dt_inicial.ano * 12 * 30 * 24;
+    
+    dt_i = dt_i_d + dt_i_m + dt_i_a;
+    
+    dt_f_d = dt_final.dia * 24;
+    dt_f_m = dt_final.mes * 30 * 24;
+    dt_f_a = dt_final.ano * 12 * 30 * 24;
+    
+    dt_f = dt_f_d + dt_f_m + dt_f_a;
+    
+    if(dt_i < dt_f){
+        return -1;
+    }
+    else if(dt_i == dt_f){
+        return 0;
+    }
+    else{
+        return 1;
+    }
 }
-*/
+
+/* COMENTARIOS COMENTOSSOS
+while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){
+    if(cod_bankaccount == bankaccount.num_conta){
+        printf("\n%s\n\n", bankaccount.nome);
+        printf("Data da movimentacao\n");
+        printf("--------------------\n");
+        printf("Digite a data: ");
+        scanf("%d/%d/%d", &movimentation.dt_movimentacao.dia, &movimentation.dt_movimentacao.mes, &movimentation.dt_movimentacao.ano);
+        printf("Digite o tipo de movimentacao\n(1 - saque, 2 - deposito): ");
+        scanf("%d", &movimentation.tipo);
+        
+        while(movimentation.tipo != 1 && movimentation.tipo != 2){
+            fprintf(stderr, "Erro! Digite apenas 1 ou 2\n");
+            scanf("%d", &movimentation.tipo);
+        }
+        
+        if(movimentation.tipo == 1){
+            printf("Valor da movimentacao: R$ ");
+            scanf("%f", &movimentation.valor);
+            while(movimentation.valor <= 0){
+                fprintf(stderr, "Valor inválido!\n");
+                fprintf(stderr, "Por favor, digite um número maior que 0:\n");
+                printf("\nValor da movimentacao: R$ ");
+                scanf("%f", &movimentation.valor); 
+            }
+            bankaccount.saldo -= movimentation.valor;
+            //bankaccount.saldo = resultado;
+            fwrite(&bankaccount, sizeof(bankaccount), 1, arq_conta);
+            fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
+            fclose(arq_mov);
+            clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
+            puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
+            stay();         /* Pausa a mensagem que está definida em
+                                * MOV_SUCESS no terminal //
+            clear_buffer();
+            clear_terminal(); // Limpa o terminal antes de voltar para o menu
+        }
+        else if(movimentation.tipo == 2){
+            printf("Valor da movimentacao: R$ ");
+            scanf("%f", &movimentation.valor);
+            while(movimentation.valor <= 0){
+                fprintf(stderr, "Valor inválido!\n");
+                fprintf(stderr, "Por favor, digite um número maior que 0:\n");
+                printf("\nValor da movimentacao: R$ ");
+                scanf("%f", &movimentation.valor); 
+            }
+            bankaccount.saldo += movimentation.valor;
+            //bankaccount.saldo = resultado;
+            fwrite(&bankaccount.saldo, sizeof(bankaccount), 1, arq_conta);
+            fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
+            fclose(arq_mov);
+            clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
+            puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
+            stay();         /* Pausa a mensagem que está definida em
+                                * MOV_SUCESS no terminal //
+            clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
+                                * digite algo e de enter, o valor digitado não 
+                                * será pego pelo menu //
+            clear_terminal(); // Limpa o terminal antes de voltar para o menu
+        }
+    }
+}
+/*    if(cod_bankaccount != bankaccount.num_conta){
+    clear_terminal();
+    printf("Não existe nenhuma conta com esse código\n");
+    printf("Movimentacao interrompida!\n");
+//             fclose(arq_cliente);
+    stay();
+    clear_buffer();    /* Limpamos o buffer aqui pois, caso o usuario 
+                        * digite algo e de enter, o valor digitado não 
+                        * será pego pelo menu //
+    clear_terminal();
+}*/

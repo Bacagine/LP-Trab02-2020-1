@@ -23,14 +23,14 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>
  * 
  * Data de criação: 29/06/2020
- * Data da última modificação: 30/06/2020
+ * Data da última modificação: 02/07/2020
  */
 
 
 #ifndef _BANK_H
 #define _BANK_H
 
-#define VERSION            "bank 20.06.30v2 (amd64)" // Versão da aplicação
+#define VERSION            "bank 20.07.2 (amd64)" // Versão da aplicação
 #define HELP               "Usage: bank [option]\n\
 \nbank é um caixa eletronico escrito em C que faz cadastro e listagem\n\
 de contas, cadastro e listagem de movimentações de saque e de deposito\n\

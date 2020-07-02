@@ -37,7 +37,7 @@
 void cadastrar_conta(void){
     setlocale(LC_ALL, "Portuguese");
     
-    FILE *arq;       // Declarando uma variavel de arquivo
+    FILE *arq;          // Declarando uma variavel de arquivo
     conta bankaccount; //  Declarando uma estrutura do tipo conta
     
     if((arq = fopen(ARQ_CONTA, "ab")) == NULL) {
@@ -76,7 +76,7 @@ void cadastrar_conta(void){
     clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
                      * digite algo e de enter, o valor digitado não 
                      * será pego pelo menu */
-    clear_terminal(); // Limpa o terminal antes de voltar para o menu
+    //clear_terminal(); // Limpa o terminal antes de voltar para o menu
 }
 
 void listar_contas(void){
@@ -95,19 +95,19 @@ void listar_contas(void){
         return;
     }
 
-    /* CONTEUDO COM OS CLIENTES CADASTRADOS */
+    /* CONTEUDO COM AS CONTAS CADASTRADAS */
     clear_terminal(); // Limpa o terminal antes de mostrar os clientes cadastrados
     fprintf(stdout, "\t\t\tContas Cadastrados\n");
-    fprintf(stdout, "*****************************************************************************\n");
-    fprintf(stdout, "#Código     Nome do Cliente                                     Saldo\n");
-    fprintf(stdout, "*****************************************************************************\n");
+    fprintf(stdout, "************************************************************************\n");
+    fprintf(stdout, "#Conta      Nome do Cliente                                     Saldo   \n");
+    fprintf(stdout, "************************************************************************\n");
     while (fread(&bankaccount, sizeof(conta), 1, arq) > 0) {
         fprintf(stdout, "%06d      %-50.50s  R$%.2f\n", bankaccount.num_conta,
-                                            bankaccount.nome,
-                                            bankaccount.saldo);
+                                                        bankaccount.nome,
+                                                        bankaccount.saldo);
     }
-    fprintf(stdout, "*****************************************************************************\n");
-    fclose(arq);            // Fecha o arquivo clientes.dat
+    fprintf(stdout, "************************************************************************\n");
+    fclose(arq);            // Fecha o arquivo contas.dat
     
     stay();            /* Pausa o arquivo de cadastros 
                         * no terminal para que o usuario
@@ -115,5 +115,5 @@ void listar_contas(void){
     clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
                      * digite algo e de enter, o valor digitado não 
                      * será pego pelo menu */
-    clear_terminal();  // Limpa o terminal antes de voltar para o menu
+    //clear_terminal();  // Limpa o terminal antes de voltar para o menu
 }
