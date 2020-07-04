@@ -166,21 +166,23 @@ void cadastrar_movimentacao(void){
 void listar_movimentacoes(void){
     setlocale(LC_ALL, "Portuguese");
     
-    FILE *arq;                    // Declarando uma variavel de arquivo
-    FILE *arq_conta;
-    conta bankaccount;           // 
+    FILE *arq, *arq_conta;        // Declarando variaveis do tipo arquivo
+    conta bankaccount;           // Desclarando uma estrutura do tipo conta
     movimentacao movimentation; // Declarando uma estrutura do tipo movimentacao
-    data dt_inicial, dt_final;
+    data dt_inicial, dt_final; // Datas a serem digitadas pelo usuário
     
-    int cod_movimentation;
-    int count;
-    int r;
+    int cod_movimentation; // Número da conta a ser digitado pelo usuário
+    int count;            // Contador
+    int r;               // Variavel que pega o retorno da função compara_datas
+    int dia_i, mes_i, ano_i;
+    int dia_f, mes_f, ano_f;
+    char tipo[2][8] = { "saque", "deposito" };
     
     if((arq_conta = fopen(ARQ_CONTA, "rb")) == NULL){
         clear_terminal();      // Limpa o terminal ao entrar aqui
         fprintf(stderr, "Erro: não nenhuma conta cadastrado!");
         stay();          // Pausa a mensagem de erro no terminal
-        clear_buffer();
+        clear_buffer(); // Limpa o buffer caso o usuário digite algo
         return;
     }
     
@@ -188,24 +190,48 @@ void listar_movimentacoes(void){
     fprintf(stdout, "********Consultar Movimentacoes********\n");
     fprintf(stdout, "Digite o código da conta: ");
     scanf("%d", &cod_movimentation);
+    count = 0;
+	// Le o arquivo de contas
     while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){
-        if(cod_movimentation != bankaccount.num_conta){
-            fprintf(stderr, "Erro! Não existe nenhuma conta cadastrada com esse numero!\n");
-            fprintf(stderr, "Consulta encerrada!\n");
-            stay();          // Pausa a mensagem de erro no terminal
-            clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
-                             * digite algo e de enter, o valor digitado não 
-                             * será pego pelo menu */
-            return;
+		if(cod_movimentation == bankaccount.num_conta){
+            count++;
         }
     }
-    fprintf(stdout, "Digite a data inicial: ");
-    scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
-    fprintf(stdout, "Digite a data final: ");
-    scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
     
+    /* Verifica se a conta digitada pelo 
+        * usuário não existe */
+    if(count == 0){
+        fprintf(stderr, "Erro! Não existe nenhuma conta cadastrada com esse numero!\n");
+        fprintf(stderr, "Consulta encerrada!\n");
+        stay();          // Pausa a mensagem de erro no terminal
+        clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
+                         * digite algo e de enter, o valor digitado não 
+                         * será pego pelo menu */
+        return;
+    }
+    
+	/* Caso exista o programa pedira as datas
+	 * para verificar o periodo das movimentações */
+    fprintf(stdout, "Digite a data inicial: ");
+    scanf("%d/%d/%d", &dia_i, &mes_i, &ano_i);
+//    scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
+    fprintf(stdout, "Digite a data final: ");
+    scanf("%d/%d/%d", &dia_f, &mes_f, &ano_f);
+//    scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
+    
+    dt_inicial.dia = dia_i, dt_inicial.mes = mes_i, dt_inicial.ano = ano_i;
+    dt_final.dia = dia_f, dt_final.mes = mes_f, dt_final.ano = ano_f;
+    
+	/* Pega o valor do retorno da função
+	 * compara_datas */
     r = compara_datas(dt_inicial, dt_final);
     
+	/* No caso do retorno ser 1
+	 * (indicando que a data ini-
+	 * cial é maior que a final),
+	 * o programa pedirá para
+	 * o usuário digitar as datas
+	 * novamente */
     while(r == 1){
         fprintf(stderr, "Erro! A data inicial e maior que a data final!\n");
         fprintf(stdout, "Por favor digite novamente:\n");
@@ -213,8 +239,12 @@ void listar_movimentacoes(void){
         scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
         fprintf(stdout, "Digite a data final: ");
         scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
+        dt_inicial.dia = dia_i, dt_inicial.mes = mes_i, dt_inicial.ano = ano_i;
+        dt_final.dia = dia_f, dt_final.mes = mes_f, dt_final.ano = ano_f;
+        r = compara_datas(dt_inicial, dt_final);
     }
     
+	/* Abre o arquivo movimentacoes.dat */
     if((arq = fopen(ARQ_MOVIMENTACAO, "rb")) == NULL){
         clear_terminal();  // Limpa o terminal ao entrar aqui
         puts(NOT_MOV);    // Mostra a mensagem que foi definida em NOT_MOV
@@ -238,19 +268,35 @@ void listar_movimentacoes(void){
     fprintf(stdout, "***********************************************\n");
     count = 0;
     // Lê o arquivo e busca pelo codigo digitado
-    while(fread(&movimentation, sizeof(movimentacao), 1, arq) > 0){
-        if((movimentation.num_conta == cod_movimentation) != 0){
-            fprintf(stdout, "%02d/%02d/%02d        %d                 R$%.2f\n",
-                                movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, movimentation.tipo, movimentation.valor);
-            
+    while(fread(&movimentation, sizeof(movimentacao), 1, arq) != 0){
+        if(movimentation.num_conta == cod_movimentation){ // != 0
+            /*if(movimentation.dt_movimentacao.dia >= dia_i && movimentation.dt_movimentacao.dia <= dia_f &&
+               movimentation.dt_movimentacao.mes >= mes_i && movimentation.dt_movimentacao.mes <= mes_f && movimentation.dt_movimentacao.ano >= ano_i && movimentation.dt_movimentacao.ano <= ano_f){ */
+                if(movimentation.tipo == 1){
+                    fprintf(stdout, "%02d/%02d/%02d        %-8.8s          R$%.2f\n",
+                                        movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, tipo[0], movimentation.valor);
+                }
+    //            if(movimentation.tipo == 2){
+                //else{
+                    fprintf(stdout, "%02d/%02d/%02d        %-8.8s          R$%.2f\n",
+                                        movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, tipo[1], movimentation.valor);
+                //}
+            //}
             count++;
         }
     }
     fprintf(stdout, "***********************************************\n");
     
+	/* Se o count for 0
+	 * isso indica que o
+	 * laço while não encontrou
+	 * nenhuma movimentação
+	 * para a conta que o usuário
+	 * escolheu verificar */
     if(count == 0){
         clear_terminal();
         fprintf(stdout, "ERRO! Não houve nenhuma movimentacao para esta conta\n");
+        return;
     }
     
     fclose(arq);            // Fecha o arquivo compras.dat
@@ -264,27 +310,41 @@ void listar_movimentacoes(void){
 }
 
 int compara_datas(data dt_inicial, data dt_final){
-    int dt_i_d, dt_i_m, dt_i_a, dt_i;
-    int dt_f_d, dt_f_m, dt_f_a, dt_f;
+    // Dia, Mes e Ano inicial, Data inicial
+	int dt_i_d, dt_i_m, dt_i_a, dt_i;
     
-    dt_i_d = dt_inicial.dia * 24;
-    dt_i_m = dt_inicial.mes * 30 * 24;
-    dt_i_a = dt_inicial.ano * 12 * 30 * 24;
+	// Dia, Mes e Ano Inicial, Data final
+	int dt_f_d, dt_f_m, dt_f_a, dt_f;
     
+    /*  */
+    dt_i_d = dt_inicial.dia;
+    dt_i_m = dt_inicial.mes * 30;
+    dt_i_a = dt_inicial.ano * 12 * 30;
+    
+	// Calcula a Data inicial 
     dt_i = dt_i_d + dt_i_m + dt_i_a;
     
-    dt_f_d = dt_final.dia * 24;
-    dt_f_m = dt_final.mes * 30 * 24;
-    dt_f_a = dt_final.ano * 12 * 30 * 24;
+	/*  */
+    dt_f_d = dt_final.dia;
+    dt_f_m = dt_final.mes * 30;
+    dt_f_a = dt_final.ano * 12 * 30;
     
+	// Calcula a Data final
     dt_f = dt_f_d + dt_f_m + dt_f_a;
     
+	/* Verifica se a
+	 * data inicial é
+	 * maior que a final */
     if(dt_i < dt_f){
         return -1;
     }
+	/* Verifica se são iguais */
     else if(dt_i == dt_f){
         return 0;
     }
+	/* Retorna 1 se a
+	 * inicial é maior
+	 * que a final */
     else{
         return 1;
     }
