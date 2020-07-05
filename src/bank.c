@@ -69,8 +69,10 @@ void menu(void){
             case 5:
                 break;
             default:
-                fprintf(stderr, "Erro!\nOpção inválida! Por favor tente novamente: ");
+                clear_terminal();
+                puts(ERROR);
                 stay();
+                clear_buffer();
                 break;
         }
         

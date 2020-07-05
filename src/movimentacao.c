@@ -68,17 +68,15 @@ void cadastrar_movimentacao(void){
         fprintf(stderr, "Erro: não nenhuma conta cadastrado!");
         stay();          // Pausa a mensagem de erro no terminal
         clear_buffer();
-        clear_terminal(); // Limpa o terminal antes de voltar para o menu
         return;
     }
     
     clear_terminal();
     printf("********Nova Movimentacao********\n");
-    //printf("Numero da movimentacao: %d\n", movimentation.num_conta);
     printf("Digite o numero da conta: ");
     scanf("%d", &cod_bankaccount);
     fseek(arq_conta, (cod_bankaccount - 1) * sizeof(conta), SEEK_SET);
-    fread(&bankaccount, sizeof(conta), 1, arq_conta);
+	fread(&bankaccount, sizeof(conta), 1, arq_conta);
     
     /* Verifica se o usuario digitou um numero 
      * de conta que não existe */
@@ -125,7 +123,7 @@ void cadastrar_movimentacao(void){
                     bankaccount.saldo -= valor;
                     fseek(arq_conta, -sizeof(conta), SEEK_CUR);
                     fwrite(&bankaccount, sizeof(conta), 1, arq_conta);
-                    fwrite(&movimentation, sizeof(bankaccount), 1, arq_mov);
+                    fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
                     clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
                     puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
                     stay();             /* Pausa a mensagem que está definida em
@@ -147,7 +145,7 @@ void cadastrar_movimentacao(void){
                     bankaccount.saldo += valor;
                     fseek(arq_conta, -sizeof(conta), SEEK_CUR);
                     fwrite(&bankaccount, sizeof(conta), 1, arq_conta);
-                    fwrite(&movimentation, sizeof(bankaccount), 1, arq_mov);
+                    fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
                     clear_terminal();        // Limpa o terminal após o termino do cadastrado da compra
                     puts(MOV_SUCESS);       // Mostra a mensagem que foi definida em MOV_SUCESS
                     stay();                /* Pausa a mensagem que está definida em
@@ -210,6 +208,8 @@ void listar_movimentacoes(void){
         return;
     }
     
+    movimentation.num_conta = cod_movimentation;
+    
 	/* Caso exista o programa pedira as datas
 	 * para verificar o periodo das movimentações */
     fprintf(stdout, "Digite a data inicial: ");
@@ -236,13 +236,17 @@ void listar_movimentacoes(void){
         fprintf(stderr, "Erro! A data inicial e maior que a data final!\n");
         fprintf(stdout, "Por favor digite novamente:\n");
         fprintf(stdout, "Digite a data inicial: ");
-        scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
+        scanf("%d/%d/%d", &dia_i, &mes_i, &ano_i);
+//        scanf("%d/%d/%d", &dt_inicial.dia, &dt_inicial.mes, &dt_inicial.ano);
         fprintf(stdout, "Digite a data final: ");
-        scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
+        scanf("%d/%d/%d", &dia_f, &mes_f, &ano_f);
+//        scanf("%d/%d/%d", &dt_final.dia, &dt_final.mes, &dt_final.ano);
         dt_inicial.dia = dia_i, dt_inicial.mes = mes_i, dt_inicial.ano = ano_i;
         dt_final.dia = dia_f, dt_final.mes = mes_f, dt_final.ano = ano_f;
         r = compara_datas(dt_inicial, dt_final);
     }
+    
+    printf("RETORNO: %d", r);
     
 	/* Abre o arquivo movimentacoes.dat */
     if((arq = fopen(ARQ_MOVIMENTACAO, "rb")) == NULL){
@@ -256,46 +260,44 @@ void listar_movimentacoes(void){
         return;
     }
     
-    /*
-     if(r == 0 || r == -1){
-        
-     }
-     */
-    
     clear_terminal();
+    fprintf(stdout, "\tMovimentacoes Cadastradas\n");
     fprintf(stdout, "***********************************************\n");
     fprintf(stdout, "#Data             Tipo              Valor      \n");
     fprintf(stdout, "***********************************************\n");
     count = 0;
     // Lê o arquivo e busca pelo codigo digitado
-    while(fread(&movimentation, sizeof(movimentacao), 1, arq) != 0){
-        if(movimentation.num_conta == cod_movimentation){ // != 0
+    while(fread(&movimentation, sizeof(movimentacao), 1, arq) > 0){
+        if((movimentation.num_conta == cod_movimentation) != 0){
             /*if(movimentation.dt_movimentacao.dia >= dia_i && movimentation.dt_movimentacao.dia <= dia_f &&
-               movimentation.dt_movimentacao.mes >= mes_i && movimentation.dt_movimentacao.mes <= mes_f && movimentation.dt_movimentacao.ano >= ano_i && movimentation.dt_movimentacao.ano <= ano_f){ */
+               movimentation.dt_movimentacao.mes >= mes_i && movimentation.dt_movimentacao.mes <= mes_f &&
+               movimentation.dt_movimentacao.ano >= ano_i && movimentation.dt_movimentacao.ano <= ano_f){*/
+            if(r == 0 || r == -1){
                 if(movimentation.tipo == 1){
                     fprintf(stdout, "%02d/%02d/%02d        %-8.8s          R$%.2f\n",
                                         movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, tipo[0], movimentation.valor);
                 }
-    //            if(movimentation.tipo == 2){
-                //else{
+                else if(movimentation.tipo == 2){
                     fprintf(stdout, "%02d/%02d/%02d        %-8.8s          R$%.2f\n",
                                         movimentation.dt_movimentacao.dia,movimentation.dt_movimentacao.mes, movimentation.dt_movimentacao.ano, tipo[1], movimentation.valor);
-                //}
-            //}
-            count++;
+                count++;
+                }
+            }
         }
     }
     fprintf(stdout, "***********************************************\n");
     
-	/* Se o count for 0
-	 * isso indica que o
-	 * laço while não encontrou
-	 * nenhuma movimentação
-	 * para a conta que o usuário
-	 * escolheu verificar */
+    /* Se o count for 0
+     * isso indica que o
+     * laço while não encontrou
+     * nenhuma movimentação
+     * para a conta que o usuário
+     * escolheu verificar */
     if(count == 0){
         clear_terminal();
         fprintf(stdout, "ERRO! Não houve nenhuma movimentacao para esta conta\n");
+        stay();
+        clear_buffer();
         return;
     }
     
@@ -310,13 +312,38 @@ void listar_movimentacoes(void){
 }
 
 int compara_datas(data dt_inicial, data dt_final){
+    /* Se as datas forem iguais a
+     * função retorna 0 */
+    if(dt_inicial.dia == dt_final.dia &&
+       dt_inicial.mes == dt_final.mes &&
+       dt_inicial.ano == dt_final.ano){
+        return 0;
+    }
+    /* Se a data inicial for menor
+     * que a final a função retorna
+     * -1 */
+    else if(dt_inicial.dia <= dt_final.dia &&
+            dt_inicial.mes <= dt_final.mes &&
+            dt_inicial.ano <= dt_final.ano){
+           return -1;
+    }
+    /* Se a data inicial for maior
+     * que a final a função retorna
+     * 1 */
+    else{
+        return 1;
+    }
+}
+
+/*
+int compara_datas(data dt_inicial, data dt_final){
     // Dia, Mes e Ano inicial, Data inicial
 	int dt_i_d, dt_i_m, dt_i_a, dt_i;
     
 	// Dia, Mes e Ano Inicial, Data final
 	int dt_f_d, dt_f_m, dt_f_a, dt_f;
     
-    /*  */
+    //  //
     dt_i_d = dt_inicial.dia;
     dt_i_m = dt_inicial.mes * 30;
     dt_i_a = dt_inicial.ano * 12 * 30;
@@ -324,7 +351,7 @@ int compara_datas(data dt_inicial, data dt_final){
 	// Calcula a Data inicial 
     dt_i = dt_i_d + dt_i_m + dt_i_a;
     
-	/*  */
+	//  //
     dt_f_d = dt_final.dia;
     dt_f_m = dt_final.mes * 30;
     dt_f_a = dt_final.ano * 12 * 30;
@@ -332,94 +359,20 @@ int compara_datas(data dt_inicial, data dt_final){
 	// Calcula a Data final
     dt_f = dt_f_d + dt_f_m + dt_f_a;
     
-	/* Verifica se a
+	/ Verifica se a
 	 * data inicial é
-	 * maior que a final */
+	 * maior que a final /
     if(dt_i < dt_f){
         return -1;
     }
-	/* Verifica se são iguais */
+	/ Verifica se são iguais /
     else if(dt_i == dt_f){
         return 0;
     }
-	/* Retorna 1 se a
+	/ Retorna 1 se a
 	 * inicial é maior
-	 * que a final */
+	 * que a final /
     else{
         return 1;
     }
-}
-
-/* COMENTARIOS COMENTOSSOS
-while(fread(&bankaccount, sizeof(conta), 1, arq_conta) > 0){
-    if(cod_bankaccount == bankaccount.num_conta){
-        printf("\n%s\n\n", bankaccount.nome);
-        printf("Data da movimentacao\n");
-        printf("--------------------\n");
-        printf("Digite a data: ");
-        scanf("%d/%d/%d", &movimentation.dt_movimentacao.dia, &movimentation.dt_movimentacao.mes, &movimentation.dt_movimentacao.ano);
-        printf("Digite o tipo de movimentacao\n(1 - saque, 2 - deposito): ");
-        scanf("%d", &movimentation.tipo);
-        
-        while(movimentation.tipo != 1 && movimentation.tipo != 2){
-            fprintf(stderr, "Erro! Digite apenas 1 ou 2\n");
-            scanf("%d", &movimentation.tipo);
-        }
-        
-        if(movimentation.tipo == 1){
-            printf("Valor da movimentacao: R$ ");
-            scanf("%f", &movimentation.valor);
-            while(movimentation.valor <= 0){
-                fprintf(stderr, "Valor inválido!\n");
-                fprintf(stderr, "Por favor, digite um número maior que 0:\n");
-                printf("\nValor da movimentacao: R$ ");
-                scanf("%f", &movimentation.valor); 
-            }
-            bankaccount.saldo -= movimentation.valor;
-            //bankaccount.saldo = resultado;
-            fwrite(&bankaccount, sizeof(bankaccount), 1, arq_conta);
-            fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
-            fclose(arq_mov);
-            clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
-            puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
-            stay();         /* Pausa a mensagem que está definida em
-                                * MOV_SUCESS no terminal //
-            clear_buffer();
-            clear_terminal(); // Limpa o terminal antes de voltar para o menu
-        }
-        else if(movimentation.tipo == 2){
-            printf("Valor da movimentacao: R$ ");
-            scanf("%f", &movimentation.valor);
-            while(movimentation.valor <= 0){
-                fprintf(stderr, "Valor inválido!\n");
-                fprintf(stderr, "Por favor, digite um número maior que 0:\n");
-                printf("\nValor da movimentacao: R$ ");
-                scanf("%f", &movimentation.valor); 
-            }
-            bankaccount.saldo += movimentation.valor;
-            //bankaccount.saldo = resultado;
-            fwrite(&bankaccount.saldo, sizeof(bankaccount), 1, arq_conta);
-            fwrite(&movimentation, sizeof(movimentacao), 1, arq_mov);
-            fclose(arq_mov);
-            clear_terminal();      // Limpa o terminal após o termino do cadastrado da compra
-            puts(MOV_SUCESS);    // Mostra a mensagem que foi definida em MOV_SUCESS
-            stay();         /* Pausa a mensagem que está definida em
-                                * MOV_SUCESS no terminal //
-            clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
-                                * digite algo e de enter, o valor digitado não 
-                                * será pego pelo menu //
-            clear_terminal(); // Limpa o terminal antes de voltar para o menu
-        }
-    }
-}
-/*    if(cod_bankaccount != bankaccount.num_conta){
-    clear_terminal();
-    printf("Não existe nenhuma conta com esse código\n");
-    printf("Movimentacao interrompida!\n");
-//             fclose(arq_cliente);
-    stay();
-    clear_buffer();    /* Limpamos o buffer aqui pois, caso o usuario 
-                        * digite algo e de enter, o valor digitado não 
-                        * será pego pelo menu //
-    clear_terminal();
-}*/
+} */

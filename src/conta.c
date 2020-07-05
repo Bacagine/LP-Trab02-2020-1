@@ -45,7 +45,6 @@ void cadastrar_conta(void){
         fprintf(stderr, "Erro: não foi possível abrir o arquivo contas.dat!");
         stay();          // Pausa a mensagem de erro no terminal
         clear_buffer();    // Limpa o buffer
-        clear_terminal(); // Limpa o terminal antes de voltar para o menu
         return;
     }
     fseek(arq, 0, SEEK_END); // Desloca o indicador de posição para o final do arquivo
@@ -76,7 +75,6 @@ void cadastrar_conta(void){
     clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
                      * digite algo e de enter, o valor digitado não 
                      * será pego pelo menu */
-    //clear_terminal(); // Limpa o terminal antes de voltar para o menu
 }
 
 void listar_contas(void){
@@ -91,7 +89,6 @@ void listar_contas(void){
         stay();          /* Pausa a mensagem que está definida em
                           * NOT_BANKACCOUNT no terminal */
         clear_buffer();
-        clear_terminal(); // Limpa o terminal antes de voltar para o menu
         return;
     }
 
@@ -101,7 +98,7 @@ void listar_contas(void){
     fprintf(stdout, "************************************************************************\n");
     fprintf(stdout, "#Conta      Nome do Cliente                                     Saldo   \n");
     fprintf(stdout, "************************************************************************\n");
-    while (fread(&bankaccount, sizeof(conta), 1, arq) > 0) {
+    while(fread(&bankaccount, sizeof(conta), 1, arq) > 0){
         fprintf(stdout, "%06d      %-50.50s  R$%.2f\n", bankaccount.num_conta,
                                                         bankaccount.nome,
                                                         bankaccount.saldo);
@@ -115,5 +112,4 @@ void listar_contas(void){
     clear_buffer(); /* Limpamos o buffer aqui pois, caso o usuario 
                      * digite algo e de enter, o valor digitado não 
                      * será pego pelo menu */
-    //clear_terminal();  // Limpa o terminal antes de voltar para o menu
 }

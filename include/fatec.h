@@ -45,7 +45,7 @@
 #ifdef __unix__
     #include <stdlib.h> // Biblioteca usada para ultilizar comandos do Sistema Operacional
     #define clear_terminal() system("clear");
-    #define stay() printf("\nPrecione qualquer tecla para continuar..."); getchar();
+    #define stay() printf("\nPrecione qualquer tecla para continuar..."); getchar();/* clear_buffer();*/
 // Verificar se o sistema é Windows ou se o programa foi compilado para Windows
 #elif defined(_WIN32) || defined(WIN32) || defined(__MINGW32__) || defined(_MCS_VER)
     #include <stdlib.h>
