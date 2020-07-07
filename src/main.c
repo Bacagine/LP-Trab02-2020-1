@@ -26,46 +26,13 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 30/06/2020                                         *
+ * Data da última modificação: 07/07/2020                                         *
  **********************************************************************************/
 
 #include <stdio.h>
-#include "../include/fatec.h"
 #include "../include/bank.h"
-#include "../include/conta.h"
-#include "../include/movimentacao.h"
 
 int main(int argc, char **argv){
-    setlocale(LC_ALL, "Portuguese");
-    if(argc == 1){
-        menu();
-    }
-    else if(argc == 2){
-        if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")){
-            puts(VERSION);
-            puts(HELP);
-        }
-        else if(!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")){
-            puts(VERSION);
-        }
-        else if(!strcmp(argv[1], "-dev") || !strcmp(argv[1], "--developers")){
-            developers(); // Mostra os desenvolvedores do programa
-        }/*
-        else if(!strcmp(argv[1], "--license")){
-            license();
-        } */
-        else if(!strcmp(argv[1], "--top-secret")){ // This is top secret
-            printf("\n"
-                   "\n"
-                   "\n"
-                   "\n"
-                   "\n"
-            );
-        }
-    }
-    else{
-        fprintf(stderr, "Erro! Você digitou mais de um argumento!\n");
-        return 1;
-    }
+    verifica_args(argc, argv);
     return 0;
 }

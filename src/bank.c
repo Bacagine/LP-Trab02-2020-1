@@ -26,21 +26,22 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 30/06/2020                                         *
+ * Data da última modificação: 07/07/2020                                         *
  **********************************************************************************/
 
 #include <stdio.h>
-#include "../include/fatec.h"
 #include "../include/bank.h"
 #include "../include/conta.h"
 #include "../include/movimentacao.h"
+#include "../include/fatec.h"
 #include "../include/progressbar.h"
 #include "../include/statusbar.h"
+#include "../include/sl.h"
 
 void menu(void){
-    setlocale(LC_ALL, "Portuguese");
+    setlocale(LC_ALL, "");
     int op;
-    loading();
+    loading("Loading...");
     do{
         clear_terminal();
         printf("*************MENU*************\n");
@@ -52,6 +53,7 @@ void menu(void){
         printf("******************************\n");
         printf("Option: ");
         scanf("%d", &op);
+        clear_buffer();
         
         switch(op){
             case 1:
@@ -72,23 +74,72 @@ void menu(void){
                 clear_terminal();
                 puts(ERROR);
                 stay();
-                clear_buffer();
                 break;
         }
         
     } while(op != 5);
 }
 
-void loading(void){
+void loading(const char *str){
     int max = 60;
     clear_terminal();
     for(int i = 0; i < 10; i++){
         printf("\n");
     }
-    progressbar *smooth = progressbar_new("Loading...", max);
+    progressbar *smooth = progressbar_new(str, max);
     for(int i = 0; i < max; i++){
         usleep(SLEEP_US);
         progressbar_inc(smooth);
     }
     progressbar_finish(smooth);
+}
+
+int verifica_args(int num_args, char **args){
+    setlocale(LC_ALL, "");
+    if(num_args == 1){
+        menu();
+    }
+    else if(num_args == 2){
+        if(!strcmp(args[1], "-h") || !strcmp(args[1], "--help")){
+            puts(VERSION);
+            puts(HELP);
+        }
+        else if(!strcmp(args[1], "-v") || !strcmp(args[1], "--version")){
+            puts(VERSION);
+        }
+        else if(!strcmp(args[1], "-dev") || !strcmp(args[1], "--developers")){
+            developers(); // Mostra os desenvolvedores do programa
+        }
+        else if(!strcmp(args[1], "--license")){
+            license(LICENSE);
+        }
+        else if(!strcmp(args[1], "--train")){ // This is top secret
+            train();
+        }
+        else{
+            fprintf(stderr, "Erro: argumento inválido!\n");
+            return 1;
+        }
+    }
+    else{
+        fprintf(stderr, "Erro: Você digitou mais de um argumento!\n");
+        return 1;
+    }
+    return 0;
+}
+
+int license(const char *l){
+    FILE *arq;
+    arq = fopen(l, "r");
+    if(arq == NULL){
+        fprintf(stderr, "Erro: Não foi possível exibir a licença deste software! =(\n");
+        fprintf(stdout, "Você pode encontra-lá no site: <https://www.gnu.org/licenses/old-licenses/gpl-2.0.html>\n");
+        return -1;
+    }
+    char line[10000];
+    while(fgets(line, 10000, arq) != NULL){
+        fputs(line, stdout);
+    }
+    fclose(arq);
+    return 0;
 }

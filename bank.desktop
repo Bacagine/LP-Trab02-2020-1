@@ -1,0 +1,9 @@
+[Desktop Entry]
+#Version=20.07.07
+Name=Bank
+Type=Application
+Comment=faz cadastro e listagem de contas, cadastro e listagem de movimentações de saque e de deposito.
+Exec=bank
+Icon=/usr/share/pixmaps/bank.png
+Terminal=true
+Categories=Utility

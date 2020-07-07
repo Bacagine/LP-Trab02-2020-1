@@ -25,7 +25,7 @@
  *                  Profº Ciro Cirne Trindade <ciroct@gmail.com>
  * 
  * Data de início: 02/12/2019
- * Data da última modificação: 30/06/2020 */
+ * Data da última modificação: 07/07/2020 */
 
 // Evita que a biblioteca seja incluida inumeras vezes
 #ifndef _FATEC_H
@@ -45,7 +45,7 @@
 #ifdef __unix__
     #include <stdlib.h> // Biblioteca usada para ultilizar comandos do Sistema Operacional
     #define clear_terminal() system("clear");
-    #define stay() printf("\nPrecione qualquer tecla para continuar..."); getchar();/* clear_buffer();*/
+    #define stay() printf("\nPrecione enter para continuar..."); getchar();
 // Verificar se o sistema é Windows ou se o programa foi compilado para Windows
 #elif defined(_WIN32) || defined(WIN32) || defined(__MINGW32__) || defined(_MCS_VER)
     #include <stdlib.h>
@@ -138,7 +138,7 @@
  * Diretorio onde se
  * encontra a lisença 
  * do software */
-#define LICENSE "./LICENSE/GPL2/Texto/gpl-2.0.txt"
+//#define LICENSE "./LICENSE/GPL2/Texto/gpl-2.0.txt"
 
 /* A seguir estruturas usadas no trabalho 
  * do professor Ciro Cirne Trindade */
@@ -323,7 +323,7 @@ void clear_buffer(void);
  * Ela printa um menu no terminal
  * Foi feita como um exemplo apenas pois,
  * o menu normalmente fica na função main.
- * Você pode usa-lá para criar seus propios menus*/
+ * Você pode usa-lá para criar seus propios menus */
 void menu(void);
 
 /* Função criada por 
@@ -338,7 +338,7 @@ void sobre(void);
  * 
  * Ela printa no terminal a licença 
  * do software */
-void license(void);
+int license(const char *l);
 
 /* Função criado pelo Profº Ciro Cirne Trindade
  * 
