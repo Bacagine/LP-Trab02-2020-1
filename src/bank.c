@@ -111,7 +111,7 @@ int verifica_args(int num_args, char **args){
             developers(); // Mostra os desenvolvedores do programa
         }
         else if(!strcmp(args[1], "--license")){
-            license(LICENSE);
+            license(LICENSE); // Mostra a licença do software
         }
         else if(!strcmp(args[1], "--train")){ // This is top secret
             train();

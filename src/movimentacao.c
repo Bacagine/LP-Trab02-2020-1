@@ -321,10 +321,10 @@ void listar_movimentacoes(void){
         /* Verifica se o número da conta é igual ao numero ditidato
          * pelo usuário */
         if((movimentation.num_conta == num_conta) != 0){
-        /* Compara a data da movimentacao com a data inicial */
-        dt_i = compara_datas(movimentation.dt_movimentacao, dt_inicial);
-        /* Compara a data da movimentacao com a data final */
-        dt_f = compara_datas(movimentation.dt_movimentacao, dt_final);
+            /* Compara a data da movimentacao com a data inicial */
+            dt_i = compara_datas(movimentation.dt_movimentacao, dt_inicial);
+            /* Compara a data da movimentacao com a data final */
+            dt_f = compara_datas(movimentation.dt_movimentacao, dt_final);
             /* Verifica se as datas são
              * iguais ou diferentes */
             if(dt_i == 0 || dt_f == 0 || dt_i == -1 || dt_f == -1){

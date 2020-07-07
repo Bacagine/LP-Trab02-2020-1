@@ -30,7 +30,7 @@
 #ifndef _BANK_H
 #define _BANK_H
 
-#define VERSION            "bank 20.07.07 (amd64)" // Versão da aplicação
+#define VERSION            "bank 20.07.07v2 (amd64)" // Versão da aplicação
 #define HELP               "Usage: bank [option]\n\
 \nbank é um caixa eletronico escrito em C que faz cadastro e listagem\n\
 de contas, cadastro e listagem de movimentações de saque e de deposito\n\
@@ -40,8 +40,8 @@ Argumentos:\n\
   -h,   --help                Imprimir a ajuda (esta mensagem) e sair\n\
   -dev, --developer           Mostra os desenvolvedores e sai\n\
   --license                   Mostra a licença do software e sai\n\
-\t\tEssa aplicação contém segredos de maquinista =)" /* Mensagem de ajuda
-                                                      * para o usuário */
+\t\tEssa aplicação contém segredos do tux maquinista =)" /* Mensagem de ajuda
+                                                          * para o usuário */
 /* Mensagem a ser 
  * mostrada após o 
  * cadastro da conta */
