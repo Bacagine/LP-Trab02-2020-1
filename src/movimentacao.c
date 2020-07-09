@@ -300,6 +300,7 @@ void listar_movimentacoes(void){
          * compara_datas */
         r = compara_datas(dt_inicial, dt_final);
     }
+    
             
     /* Verifica se o arquivo movimentacoes.dat exite e
      * abre para leitura */
@@ -311,6 +312,7 @@ void listar_movimentacoes(void){
     }
     
     clear_terminal();
+    //printf("Retorno = %d", r);
     fprintf(stdout, "\tMovimentacoes Cadastradas\n");
     fprintf(stdout, "***********************************************\n");
     fprintf(stdout, "#Data             Tipo              Valor      \n");
@@ -327,7 +329,7 @@ void listar_movimentacoes(void){
             dt_f = compara_datas(movimentation.dt_movimentacao, dt_final);
             /* Verifica se as datas são
              * iguais ou diferentes */
-            if(dt_i == 0 || dt_f == 0 || dt_i == -1 || dt_f == -1){
+            if(dt_i == 0 || dt_f == 0 || dt_f == -1){
                 /* Se o tipo de movimentacao
                  * for do tipo 1, será mostrado
                  * para o usuario saque */
@@ -372,28 +374,33 @@ void listar_movimentacoes(void){
                         * possa ver as compras cadastradas */
 }
 
-int compara_datas(data dt_movimentacao, data dt){
-    /* Verifica se as datas são iguais */
-    bool dts_iguais = dt_movimentacao.dia == dt.dia &&
-                      dt_movimentacao.mes == dt.mes &&
-                      dt_movimentacao.ano == dt.ano;
-    /* Verifica se a data inicial é menor que a final */
-    bool dt_mov_menor = dt_movimentacao.dia < dt.dia &&
-                      dt_movimentacao.mes <= dt.mes &&
-                      dt_movimentacao.ano <= dt.ano;
+int compara_datas(data dt1, data dt2){
+    int d1, d2;
+    
+    d1 = dt1.ano * 10000 + dt1.mes * 100 + dt1.dia;
+    d2 = dt2.ano * 10000 + dt2.mes * 100 + dt2.dia;
+    
+    /* Verifica se as datas 
+     * são iguais */
+    bool dts_iguais = d1 == d2;
+    /* Verifica se a primeira 
+     * data é menor que a 
+     * segunda */
+    bool dt1_menor = d1 < d2;
+    
     /* Se as datas forem iguais a
      * função retorna 0 */
     if(dts_iguais == true){
         return 0;
     }
-    /* Se a data da movimentacao for
-     * menor que a final a função 
-     * retorna -1 */
-    else if(dt_mov_menor == true){
-           return -1;
+    /* Se a primeira data for menor 
+     * que a data escolhida pelo
+     * usuário a função retorna -1 */
+    else if(dt1_menor == true){
+        return -1;
     }
-    /* Se a data da movimentacao for
-     * maior que a final a função
+    /* Se a primeira data for maior
+     * que a segunda data a função
      * retorna 1 */
     else{
         return 1;
