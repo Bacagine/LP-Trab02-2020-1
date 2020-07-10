@@ -27,7 +27,7 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 07/07/2020                                         *
+ * Data da última modificação: 09/07/2020                                         *
  **********************************************************************************/
 
 #include <stdio.h>
@@ -329,7 +329,7 @@ void listar_movimentacoes(void){
             dt_f = compara_datas(movimentation.dt_movimentacao, dt_final);
             /* Verifica se as datas são
              * iguais ou diferentes */
-            if(dt_i == 0 || dt_f == 0 || dt_f == -1){
+            if(dt_i >= 0 && dt_f <= 0){
                 /* Se o tipo de movimentacao
                  * for do tipo 1, será mostrado
                  * para o usuario saque */

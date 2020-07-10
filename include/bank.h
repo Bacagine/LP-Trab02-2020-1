@@ -30,7 +30,7 @@
 #ifndef _BANK_H
 #define _BANK_H
 
-#define VERSION            "bank 20.07.09 (amd64)" // Versão da aplicação
+#define VERSION            "bank 20.07.09v2 (amd64)" // Versão da aplicação
 #define HELP               "Usage: bank [option]\n\
 \nbank é um caixa eletronico escrito em C que faz cadastro e listagem\n\
 de contas, cadastro e listagem de movimentações de saque e de deposito\n\
