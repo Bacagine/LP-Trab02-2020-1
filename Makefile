@@ -4,7 +4,7 @@
 # cadastro e listagem de movimentações de saque e de deposito.
 # 
 # Data de criação: 29/06/2020
-# Data da última modificação: 07/07/2020 
+# Data da última modificação: 11/02/2021 
 #
 # Aqui deve vir uma breve esplicação sobre a aplicação
 #
@@ -20,13 +20,13 @@ ICONDIR = ./icons
 ICON    = $(ICONDIR)/$(TARGET).png
 SRC     = $(wildcard $(SRCDIR)/*.c)
 INC     = -I $(INCDIR)
-OBJ     = $(addprefix $(OBJDIR)/,main.o bank.o conta.o movimentacao.o progressbar.o statusbar.o sl.o clear_buffer.o developers.o)
+OBJ     = $(addprefix $(OBJDIR)/,main.o bank.o conta.o movimentacao.o progressbar.o statusbar.o sl.o)
 BIN     = $(BINDIR)/$(TARGET)
 DAT     = $(wildcard ./*.dat)
 RM      = rm -rf
 LINK    = ln -s
 CC      = gcc
-CFLAGS  = -W -Wall -g -lm -lncurses
+CFLAGS  = -W -Wall -g -lm -lncurses -lfatec
 
 # Cria os diretorios ./bin, ./obj 
 # e o executavel
@@ -42,19 +42,18 @@ $(BIN): $(OBJ)
 $(OBJDIR)/main.o: $(SRCDIR)/main.c $(INCDIR)/bank.h
 	$(CC) -c $< $(INC) -o $@
 $(OBJDIR)/bank.o: $(SRCDIR)/bank.c $(INCDIR)/bank.h $(INCDIR)/conta.h \
-                  $(INCDIR)/movimentacao.h $(INCDIR)/fatec.h \
-                  $(INCDIR)/progressbar.h $(INCDIR)/statusbar.h \
-                  $(INCDIR)/sl.h
+                  $(INCDIR)/movimentacao.h $(INCDIR)/progressbar.h \
+				  $(INCDIR)/statusbar.h $(INCDIR)/sl.h
 	$(CC) -c $< $(INC) -o $@
-$(OBJDIR)/conta.o: $(SRCDIR)/conta.c $(INCDIR)/conta.h $(INCDIR)/bank.h $(INCDIR)/fatec.h
+$(OBJDIR)/conta.o: $(SRCDIR)/conta.c $(INCDIR)/conta.h $(INCDIR)/bank.h
 	$(CC) -c $< $(INC) -o $@
-$(OBJDIR)/movimentacao.o: $(SRCDIR)/movimentacao.c $(INCDIR)/movimentacao.h\
-                          $(INCDIR)/conta.h $(INCDIR)/bank.h $(INCDIR)/fatec.h
+$(OBJDIR)/movimentacao.o: $(SRCDIR)/movimentacao.c $(INCDIR)/movimentacao.h \
+                          $(INCDIR)/conta.h $(INCDIR)/bank.h
 	$(CC) -c $< $(INC) -o $@
-$(OBJDIR)/clear_buffer.o: $(SRCDIR)/clear_buffer.c $(INCDIR)/fatec.h
-	$(CC) -c $< $(INC) -o $@
-$(OBJDIR)/developers.o: $(SRCDIR)/developers.c $(INCDIR)/fatec.h
-	$(CC) -c $< $(INC) -o $@
+#$(OBJDIR)/clear_buffer.o: $(SRCDIR)/clear_buffer.c
+#	$(CC) -c $< $(INC) -o $@
+#$(OBJDIR)/developers.o: $(SRCDIR)/developers.c
+#	$(CC) -c $< $(INC) -o $@
 $(OBJDIR)/progressbar.o: $(SRCDIR)/progressbar.c $(INCDIR)/progressbar.h
 	$(CC) -c $< $(INC) -o $@
 $(OBJDIR)/statusbar.o: $(SRCDIR)/statusbar.c $(INCDIR)/statusbar.h

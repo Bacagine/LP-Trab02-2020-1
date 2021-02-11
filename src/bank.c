@@ -26,14 +26,14 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 07/07/2020                                         *
+ * Data da última modificação: 11/02/2021                                         *
  **********************************************************************************/
 
 #include <stdio.h>
+#include <fatec/fatec.h>
 #include "../include/bank.h"
 #include "../include/conta.h"
 #include "../include/movimentacao.h"
-#include "../include/fatec.h"
 #include "../include/progressbar.h"
 #include "../include/statusbar.h"
 #include "../include/sl.h"
@@ -72,7 +72,7 @@ void menu(void){
                 break;
             default:
                 clear_terminal();
-                puts(ERROR);
+                puts(INVALID_OPTION);
                 stay();
                 break;
         }
@@ -94,40 +94,6 @@ void loading(const char *str){
     progressbar_finish(smooth);
 }
 
-int verifica_args(int num_args, char **args){
-    setlocale(LC_ALL, "");
-    if(num_args == 1){
-        menu();
-    }
-    else if(num_args == 2){
-        if(!strcmp(args[1], "-h") || !strcmp(args[1], "--help")){
-            puts(VERSION);
-            puts(HELP);
-        }
-        else if(!strcmp(args[1], "-v") || !strcmp(args[1], "--version")){
-            puts(VERSION);
-        }
-        else if(!strcmp(args[1], "-dev") || !strcmp(args[1], "--developers")){
-            developers(); // Mostra os desenvolvedores do programa
-        }
-        else if(!strcmp(args[1], "--license")){
-            license(LICENSE); // Mostra a licença do software
-        }
-        else if(!strcmp(args[1], "--train")){ // This is top secret
-            train();
-        }
-        else{
-            fprintf(stderr, "Erro: argumento inválido!\n");
-            return 1;
-        }
-    }
-    else{
-        fprintf(stderr, "Erro: Você digitou mais de um argumento!\n");
-        return 1;
-    }
-    return 0;
-}
-
 int license(const char *l){
     FILE *arq;
     arq = fopen(l, "r");
@@ -142,4 +108,23 @@ int license(const char *l){
     }
     fclose(arq);
     return 0;
+}
+
+void developers(void){
+    setlocale(LC_ALL, "Portuguese");
+    
+    fprintf(stdout, "*************************DESENVOLVEDORES*************************\n");    
+    fprintf(stdout, "*                                                               *\n");
+    fprintf(stdout, "* FATEC        -          Carapicuiba            -         2020 *\n");
+    fprintf(stdout, "*---------------------------------------------------------------*\n");
+    fprintf(stdout, "*                                                               *\n");
+    fprintf(stdout, "* Gustavo Bacagine          <gustavo.bacagine@protonmail.com>   *\n");
+    fprintf(stdout, "* Lucas Pereira de Matos    <lucas.pereira.matos.000@gmail.com> *\n");
+    fprintf(stdout, "* Caio Elias Emerick Regino <caioregino.147@gmail.com>          *\n");
+    fprintf(stdout, "*                                                               *\n");
+    fprintf(stdout, "* bank é um caixa eletronico escrito em C que faz cadastro e    *\n");
+    fprintf(stdout, "* listagem de contas, cadastro e listagem de movimentações de   *\n");
+    fprintf(stdout, "* saque e de deposito                                           *\n");
+    fprintf(stdout, "*                                                               *\n");
+    fprintf(stdout, "*****************************************************************\n");
 }

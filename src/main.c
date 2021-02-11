@@ -26,13 +26,47 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 07/07/2020                                         *
+ * Data da última modificação: 11/02/2021                                         *
  **********************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
+#include <locale.h>
+#include <fatec/fatec.h>
 #include "../include/bank.h"
+#include "../include/sl.h"
 
 int main(int argc, char **argv){
-    verifica_args(argc, argv);
+    setlocale(LC_ALL, "");
+    if(argc == 1){
+        menu();
+    }
+    else if(argc == 2){
+        if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")){
+            puts(VERSION);
+            puts(HELP);
+        }
+        else if(!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version")){
+            puts(VERSION);
+        }
+        else if(!strcmp(argv[1], "-dev") || !strcmp(argv[1], "--developers")){
+            developers(); // Mostra os desenvolvedores do programa
+        }
+        else if(!strcmp(argv[1], "--license")){
+            cat(LICENSE); // Mostra a licença do software
+        }
+        else if(!strcmp(argv[1], "--train")){ // This is top secret
+            train();
+        }
+        else{
+            fprintf(stderr, "Erro: argumento inválido!\n");
+            return 1;
+        }
+    }
+    else{
+        fprintf(stderr, "Erro: Você digitou mais de um argumento!\n");
+        return 1;
+    }
     return 0;
 }
+

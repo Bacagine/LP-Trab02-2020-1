@@ -23,14 +23,14 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>
  * 
  * Data de criação: 29/06/2020
- * Data da última modificação: 07/07/2020
+ * Data da última modificação: 11/02/2021
  */
 
 
 #ifndef _BANK_H
 #define _BANK_H
 
-#define VERSION            "bank 20.07.09v2 (amd64)" // Versão da aplicação
+#define VERSION            "bank 21.02.11 (amd64)" // Versão da aplicação
 #define HELP               "Usage: bank [option]\n\
 \nbank é um caixa eletronico escrito em C que faz cadastro e listagem\n\
 de contas, cadastro e listagem de movimentações de saque e de deposito\n\
@@ -75,7 +75,13 @@ Argumentos:\n\
 #define SLEEP_US           100000
 
 /* Arquivo com a licença do software */
-#define LICENSE            "LICENSE"
+#ifdef UNIX
+    #define LICENSE            "/usr/share/common-licenses/GPL-2"
+#else
+    #define LICENSE            "/usr/share/bank/LICENSE"
+#endif // UNIX
+
+#define INVALID_OPTION "Erro: Opcao invalida"
 
 #include <unistd.h> // Biblioteca necessária para a função loading
 
@@ -86,10 +92,15 @@ Argumentos:\n\
  * para o usuário */
 void loading(const char *str);
 
-/* Verifica se foi passado
- * argumentos na função main
- * e, em caso positivo verifica
- * quais são esses argumentos */
-int verifica_args(int num_args, char **args);
+/* Menu da aplicação */
+void menu(void);
+
+/* Mostra a licensa do software */
+int license(const char *l);
+
+/* Mostra os desenvolvedores
+ * do programa */
+void developers(void);
 
 #endif
+

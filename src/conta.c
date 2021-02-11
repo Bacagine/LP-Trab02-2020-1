@@ -26,13 +26,13 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 07/07/2020                                         *
+ * Data da última modificação: 11/02/2021                                         *
  **********************************************************************************/
 
 #include <stdio.h>
+#include <fatec/fatec.h>
 #include "../include/bank.h"
 #include "../include/conta.h"
-#include "../include/fatec.h"
 
 void cadastrar_conta(void){
     setlocale(LC_ALL, "");

@@ -27,14 +27,14 @@
  * com este programa; caso contrário, veja <https://www.gnu.org/licenses/>        *
  *                                                                                *
  * Data de inicio: 29/06/2020                                                     *
- * Data da última modificação: 09/07/2020                                         *
+ * Data da última modificação: 11/02/2021                                         *
  **********************************************************************************/
 
 #include <stdio.h>
+#include <fatec/fatec.h>
 #include "../include/bank.h"
 #include "../include/conta.h"
 #include "../include/movimentacao.h"
-#include "../include/fatec.h"
 
 void cadastrar_movimentacao(void){
     setlocale(LC_ALL, "");
@@ -327,8 +327,9 @@ void listar_movimentacoes(void){
             dt_i = compara_datas(movimentation.dt_movimentacao, dt_inicial);
             /* Compara a data da movimentacao com a data final */
             dt_f = compara_datas(movimentation.dt_movimentacao, dt_final);
-            /* Verifica se as datas são
-             * iguais ou diferentes */
+            /* Verifica se as datas
+             * estão no intervalo dese-
+             * jado */
             if(dt_i >= 0 && dt_f <= 0){
                 /* Se o tipo de movimentacao
                  * for do tipo 1, será mostrado
