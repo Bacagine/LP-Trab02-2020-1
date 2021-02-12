@@ -1,4 +1,6 @@
 # Bank
+![git-hub large](bank.png)
+
 Bank was created for study the use of structures and files manipulation in C
 
 This program simule the movimentation and creation of bank accounts
