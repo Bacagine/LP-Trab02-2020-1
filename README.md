@@ -1,5 +1,5 @@
 # Bank
-![git-hub large](bank.png)
+<!--![git-hub large](bank.png) -->
 
 Bank was created for study the use of structures and files manipulation in C
 
